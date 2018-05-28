@@ -10,129 +10,114 @@ namespace Essential13._1
 
     class OneFlow
     {
+        static object syncobject = new object();
         Random rnd = new Random();
         public int Length { get; set; }
         public int X { get; set; }
-        int y;
-        public int Y { get => y; set => y=value>25?0:value; }
-        public char[] Symbols { get; set; }
+        public int Y { get; set; }
         public OneFlow(int x,int length)
         {
             X = x;
-            Y = 10;
-            Length = rnd.Next(0, length);
-            Thread.Sleep(5);
-            Symbols = new char[25];
-            //Symbol=(char)rnd.Next(12352, 12543);
-
-                for (int i = 0; i < 25; i++)
-                {
-                if (i<Length)
-                {
-                    Symbols[i] = (char)rnd.Next(65, 122);
-                }                    
-                else
-                {
-                    Symbols[i] = ' ';
-                }
-                //Thread.Sleep(5);
-            }
-
+            Y = 0;
+            Length = rnd.Next(3, length);
             
-            Thread.Sleep(10);
         }
 
-
-    }
-
-    class Painter
-    {
-        OneFlow[] flows;
-        Random rnd = new Random();
-
-        public Painter()
+        public void Move()
         {
-            flows = new OneFlow[80];
-            for (int i = 0; i < 80; i++)
-            {
-                if (rnd.Next(0,2)==1)
-                {
-                    flows[i] = new OneFlow(i + 1, 10);
-                }
-                else
-                {
-                    flows[i] = new OneFlow(i + 1, 0);
-                }
-                Thread.Sleep(5);
-            }
-        }
 
-        public void MoveAllFlows()
-        {
-            for (int i = 0; i < flows.Length; i++)
+            while (Y<=40)
             {
-                flows[i].Y += 1;
-            }
-        }
-
-
-        public void Paint()
-        {
-            bool drawed = false;
-            for (int j = 1; j <= 25; j++)
-            {
-                for (int i = 0; i < 80; i++)
+                lock (syncobject)
                 {
-                    drawed = false;
-                    for (int o = 0; o < 25; o++)
+                    Console.CursorLeft = X;
+                    if (Y - 1 - Length>0)
                     {
-                        if (j == flows[i].Y - o)
+                        Console.CursorTop = Y - 1 - Length;
+                        Console.WriteLine(' ');
+                    }                    
+                    for (int i = Y<=24?0:Y-24; i < Length; i++)
+                    {
+                        if (Y - i <= 0)
                         {
-                            switch (o)
-                            {
-                                case 0:
-                                    Console.ForegroundColor = ConsoleColor.White;
-                                    break;
-                                case 1:
-                                    Console.ForegroundColor = ConsoleColor.Green;
-                                    break;
-                                default:
-                                    Console.ForegroundColor = ConsoleColor.DarkGreen;
-                                    break;
-                            }                                                        
-                            Console.Write(flows[i].Symbols[o]);
-                            drawed = true;
+                            break;
                         }
-
+                        
+                        Console.CursorLeft = X;
+                        Console.CursorTop = Y - i;
+                        switch (i)
+                        {
+                            case 0:
+                                Console.ForegroundColor = ConsoleColor.White;
+                                break;
+                            case 1:
+                                Console.ForegroundColor = ConsoleColor.Green;
+                                break;
+                            default:
+                                Console.ForegroundColor = ConsoleColor.DarkGreen;
+                                break;
+                        }
+                        Console.WriteLine((char)rnd.Next(65, 122));
                     }
-                    if (!drawed)
-                    {
-                        Console.Write(' ');
-                    }                   
-
                 }
+                Y++;
+                if (Y>=26+Length)
+                {
+                    Y = 0;
+                }
+               Thread.Sleep(50);
             }
-            MoveAllFlows();
-        }        
+        }
 
     }
+
 
 
     class Program
     {
         static void Main(string[] args)
         {
-
-            Painter painter = new Painter();
-            for (int i = 0; i < 20; i++)
+            Random random = new Random();
+            //OneFlow[] flows = new OneFlow[70];
+            Console.WindowWidth = 75;
+            for (int i = 1; i <= 75; i++)
             {
-                painter.Paint();
+                if (true)
+                {
+                    OneFlow oneFlow = new OneFlow(i, 15);
+                    //flows[i - 1] = oneFlow;
+                    new Thread(oneFlow.Move).Start();
+                    Thread.Sleep(50);
+                }
             }
-            
+
+            //for (int i = 1; i <= 50; i++)
+            //{
+            //    if (true)
+            //    {
+            //        OneFlow oneFlow = new OneFlow(i, 8);
+            //        //flows[i +34] = oneFlow;
+            //        new Thread(oneFlow.Move).Start();
+            //        Thread.Sleep(50);
+            //    }
+            //}
+
+            //for (int i = 1; i <= 50; i++)
+            //{
+            //    if (true)
+            //    {
+            //        OneFlow oneFlow = new OneFlow(i, 8);
+            //        //flows[i +34] = oneFlow;
+            //        new Thread(oneFlow.Move).Start();
+            //        Thread.Sleep(50);
+            //    }
+            //}
 
 
+            while (true)
+            {
 
-            Console.Read();
+            }
         }
     }
 }
