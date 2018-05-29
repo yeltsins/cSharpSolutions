@@ -92,7 +92,7 @@ namespace Essential14._2
 
     }
 
-    class LightList<T>
+    public class LightList<T>
     {
         private T[] array;
 
@@ -141,9 +141,25 @@ namespace Essential14._2
 
     }
 
+    public static class Extension
+    {
+        public static T[] GetArray<T>(this IEnumerable<T> list)
+        {
+            T[] array = new T[list.Count()];
+            int i = 0;
+            foreach (var item in list)
+            {
+                array[i++] = item;
+            }
+            return array;
+        }
+    }
+
 
     class Program
     {
+
+
         static void Main(string[] args)
         {
             //MyList<int> myList = new MyList<int>(1, 2, 3, 4, 5, 6);
@@ -155,16 +171,18 @@ namespace Essential14._2
             //    Console.WriteLine(item);
             //}
 
-            LightList<int> light = new LightList<int>(1, 2, 3, 4, 5, 6);
+            MyList<int> light = new MyList<int>(1, 2, 3, 4, 5, 6);
 
             light.Add(1, 2, 3);
+
+            var array = light.GetArray();
 
             foreach (var item in light)
             {
                 Console.WriteLine(item);
             }
 
-            foreach (var item in light)
+            foreach (var item in array)
             {
                 Console.WriteLine(item);
             }
